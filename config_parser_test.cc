@@ -4,31 +4,6 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
 
-TEST(NginxConfigParserTest, SimpleConfig) {
-  NginxConfigParser parser;
-  NginxConfig out_config;
-
-  bool success = parser.Parse("example_config", &out_config);
-
-  EXPECT_TRUE(success);
-}
-
-TEST(NginxConfigParserTest, NestedConfig) {
-  NginxConfigParser parser;
-  NginxConfig out_config;
-
-  bool success = parser.Parse("example_config2", &out_config);
-
-  EXPECT_TRUE(success);
-}
-
-// foo bar;
-TEST(NginxConfigTest, ToString) {
-	NginxConfigStatement statement;
-	statement.tokens_.push_back("foo");
-	statement.tokens_.push_back("bar");
-	EXPECT_EQ(statement.ToString(0), "foo bar;\n");
-}
 
 class NginxStringConfigTest : public ::testing::Test {
 protected:
@@ -39,6 +14,22 @@ protected:
 	NginxConfigParser parser_;
 	NginxConfig out_config_;
 };
+
+TEST_F(NginxStringConfigTest, SimpleConfig) {
+	EXPECT_TRUE(parser_.Parse("example_config", &out_config_));
+}
+
+TEST_F(NginxStringConfigTest, SimpleConfig2) {
+	EXPECT_TRUE(parser_.Parse("example_config2", &out_config_));
+}
+
+TEST_F(NginxStringConfigTest, NedstedConfig) {
+	EXPECT_TRUE(parser_.Parse("nested_blocks", &out_config_));
+}
+
+TEST_F(NginxStringConfigTest, WhitespaceConfig) {
+	EXPECT_TRUE(parser_.Parse("whitespace_config", &out_config_));
+}
 
 TEST_F(NginxStringConfigTest, AnotherSimpleConfig) {
 	EXPECT_TRUE(ParseString("foo bar;"));
